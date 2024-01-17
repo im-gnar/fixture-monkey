@@ -7,20 +7,30 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
+import org.springframework.context.annotation.Import;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.TestPropertySource;
 
-import com.navercorp.fixturemonkey.spring.Bananas;
+import com.navercorp.fixturemonkey.spring.interceptor.MethodInterceptorContext;
+import com.navercorp.fixturemonkey.spring.interceptor.FixtureMonkeyInterceptorConfiguration;
 import com.navercorp.fixturemonkey.tests.springtests.SpringTestApplication;
 import com.navercorp.fixturemonkey.tests.springtests.config.TestApiClient;
 
-@SpringBootTest(classes = SpringTestApplication.class, webEnvironment = WebEnvironment.NONE)
+@SpringBootTest(
+	classes = SpringTestApplication.class,
+	webEnvironment = WebEnvironment.NONE
+)
+@Import(FixtureMonkeyInterceptorConfiguration.class)
+@ActiveProfiles("test")
 class SpringTestsApplicationTests {
 
 	@Autowired
+
 	private TestApiClient testApiClient;
 
 	@AfterEach
 	void tearDown() {
-		Bananas.clear();
+		MethodInterceptorContext.clear();
 	}
 
 	@Test
@@ -52,7 +62,7 @@ class SpringTestsApplicationTests {
 	@Test
 	void setRawString() {
 		String expected = "hahaho";
-		Bananas.type(TestApiClient.class, String.class)
+		MethodInterceptorContext.type(TestApiClient.class, String.class)
 			.set("$", expected);
 
 		String actual = testApiClient.getRawString();
@@ -63,7 +73,7 @@ class SpringTestsApplicationTests {
 	@Test
 	void setByType() {
 		String expected = "hahaho";
-		Bananas.type(TestApiClient.class, String.class)
+		MethodInterceptorContext.type(TestApiClient.class, String.class)
 			.set("$", expected);
 
 		String actual = testApiClient.getMonoString()
@@ -75,7 +85,7 @@ class SpringTestsApplicationTests {
 	@Test
 	void setByName() {
 		String expected = "hahaho";
-		Bananas.name(TestApiClient.class, "getMonoString")
+		MethodInterceptorContext.name(TestApiClient.class, "getMonoString")
 			.set("$", expected);
 
 		String actual = testApiClient.getMonoString()
@@ -87,7 +97,7 @@ class SpringTestsApplicationTests {
 	@Test
 	void setWhenEmpty() {
 		String expected = "hahaho";
-		Bananas.type(TestApiClient.class, String.class)
+		MethodInterceptorContext.type(TestApiClient.class, String.class)
 			.set("$", expected);
 
 		String actual = testApiClient.getMonoEmpty()
@@ -99,7 +109,7 @@ class SpringTestsApplicationTests {
 	@Test
 	void setWhenNull() {
 		String expected = "hahaho";
-		Bananas.type(TestApiClient.class, String.class)
+		MethodInterceptorContext.type(TestApiClient.class, String.class)
 			.set("$", expected);
 
 		String actual = testApiClient.getNull();
@@ -125,7 +135,7 @@ class SpringTestsApplicationTests {
 	@Test
 	void setComplexType() {
 		String expected = "hahaho";
-		Bananas.type(TestApiClient.class, ComplexType.class)
+		MethodInterceptorContext.type(TestApiClient.class, ComplexType.class)
 			.set("value", expected);
 		String actual = testApiClient.getComplexType().value();
 

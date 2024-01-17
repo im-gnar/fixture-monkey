@@ -1,25 +1,44 @@
-package com.navercorp.fixturemonkey.spring;
+/*
+ * Fixture Monkey
+ *
+ * Copyright (c) 2021-present NAVER Corp.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.navercorp.fixturemonkey.spring.interceptor;
 
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-import java.util.concurrent.ConcurrentHashMap;
 
 import javax.annotation.Nullable;
 
-import com.navercorp.fixturemonkey.spring.Bananas.RequestTarget.RequestMethod;
-import com.navercorp.fixturemonkey.spring.Bananas.RequestTarget.FixtureMonkeyManipulation;
+import com.navercorp.fixturemonkey.api.container.ConcurrentLruCache;
+import com.navercorp.fixturemonkey.spring.interceptor.MethodInterceptorContext.RequestTarget.FixtureMonkeyManipulation;
+import com.navercorp.fixturemonkey.spring.interceptor.MethodInterceptorContext.RequestTarget.RequestMethod;
 
-public final class Bananas {
-	private static final Map<Class<?>, RequestTarget> targetsByType = new ConcurrentHashMap<>();
+public final class MethodInterceptorContext {
+	private static final Map<Class<?>, RequestTarget> targetsByType =
+		new ConcurrentLruCache<>(2048);
 
-	public static FixtureMonkeyManipulation type(Class<?> apiClientType, Class<?> returnType) {
-		return method(apiClientType, new RequestMethod<>(returnType, null));
+	public static FixtureMonkeyManipulation type(Class<?> methodCallerType, Class<?> returnType) {
+		return method(methodCallerType, new RequestMethod<>(returnType, null));
 	}
 
-	public static FixtureMonkeyManipulation name(Class<?> apiClientType, String methodName) {
-		return method(apiClientType, new RequestMethod<>(null, methodName));
+	public static FixtureMonkeyManipulation name(Class<?> methodCallerType, String methodName) {
+		return method(methodCallerType, new RequestMethod<>(null, methodName));
 	}
 
 	private static FixtureMonkeyManipulation method(Class<?> type, RequestMethod<?> requestMethod) {

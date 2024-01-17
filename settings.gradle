@@ -34,6 +34,6 @@ include(
         "fixture-monkey-tests:kotlin-concurrent-tests",
         "fixture-monkey-kotest",
         "fixture-monkey-spring",
-        'fixture-monkey-tests:spring-tests'
+        "fixture-monkey-tests:spring-tests"
 )
 
