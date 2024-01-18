@@ -27,6 +27,7 @@ import net.jqwik.api.Arbitraries;
 import net.jqwik.api.Example;
 
 import com.navercorp.fixturemonkey.FixtureMonkey;
+import com.navercorp.fixturemonkey.api.plugin.InterfacePlugin;
 import com.navercorp.fixturemonkey.mockito.plugin.MockitoPluginTestSpecs.AbstractSample;
 import com.navercorp.fixturemonkey.mockito.plugin.MockitoPluginTestSpecs.AbstractSampleImpl;
 import com.navercorp.fixturemonkey.mockito.plugin.MockitoPluginTestSpecs.InterfaceSample;
@@ -62,7 +63,10 @@ class MockitoPluginTest {
 	void interfaceImplementsAndMockitoInterface() {
 		FixtureMonkey sut = FixtureMonkey.builder()
 			.plugin(new MockitoPlugin())
-			.interfaceImplements(InterfaceSample.class, Collections.singletonList(InterfaceSampleImpl.class))
+			.plugin(
+				new InterfacePlugin()
+					.interfaceImplements(InterfaceSample.class, Collections.singletonList(InterfaceSampleImpl.class))
+			)
 			.defaultNullInjectGenerator(context -> 0)
 			.build();
 
@@ -76,7 +80,10 @@ class MockitoPluginTest {
 		FixtureMonkey sut = FixtureMonkey.builder()
 			.plugin(new MockitoPlugin())
 			.defaultNullInjectGenerator(context -> 0)
-			.interfaceImplements(AbstractSample.class, Collections.singletonList(AbstractSampleImpl.class))
+			.plugin(
+				new InterfacePlugin()
+					.interfaceImplements(AbstractSample.class, Collections.singletonList(AbstractSampleImpl.class))
+			)
 			.build();
 
 		String actual = sut.giveMeOne(Sample.class).getAbstractSample().getValue();
