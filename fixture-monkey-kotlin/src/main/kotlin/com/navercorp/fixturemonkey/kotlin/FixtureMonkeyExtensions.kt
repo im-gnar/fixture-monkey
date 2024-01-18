@@ -52,6 +52,12 @@ inline fun <reified T : Any?> FixtureMonkey.giveMeArbitrary(): Arbitrary<T> =
 inline fun <reified T : Any?> FixtureMonkey.giveMeBuilder(): KotlinTypeDefaultArbitraryBuilder<T> =
     KotlinTypeDefaultArbitraryBuilder(this.giveMeBuilder(object : TypeReference<T>() {}))
 
+inline fun <reified T : Any?> FixtureMonkey.giveMeKotlinBuilder(): KotlinTypeDefaultArbitraryBuilder<T> =
+    KotlinTypeDefaultArbitraryBuilder(this.giveMeBuilder(object : TypeReference<T>() {}))
+
+inline fun <reified T : Any?> FixtureMonkey.giveMeKotlinBuilder(value: T): KotlinTypeDefaultArbitraryBuilder<T> =
+    KotlinTypeDefaultArbitraryBuilder(this.giveMeBuilder(value))
+
 inline fun <reified T : Any?> FixtureMonkey.giveMeExperimentalBuilder(): ExperimentalArbitraryBuilder<T> =
     this.giveMeExperimentalBuilder(object : TypeReference<T>() {})
 
